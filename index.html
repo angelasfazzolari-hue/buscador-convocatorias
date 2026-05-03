@@ -7,13 +7,12 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: Arial, sans-serif; background: #f5f0f5; color: #1a1018; font-size: 14px; }
-  header { background: rgb(112,64,105); padding: 0 2rem; height: 54px; display: flex; align-items: center; justify-content: space-between; }
+  header { background: rgb(112,64,105); padding: 0 2rem; height: 54px; display: flex; align-items: center; }
   .logo { color: white; font-size: 18px; font-weight: bold; }
   .search-bar { background: white; padding: 14px 2rem; display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 1px solid #ddd; }
   .search-bar input { flex: 1; min-width: 200px; padding: 9px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 14px; }
   .search-bar select { padding: 9px 10px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 13px; }
   .btn-buscar { padding: 9px 22px; background: rgb(220,92,73); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
-  .btn-buscar:hover { background: rgb(200,72,53); }
   .btn-buscar:disabled { opacity: 0.5; cursor: not-allowed; }
   .body { max-width: 1080px; margin: 0 auto; padding: 2rem; }
   .welcome { text-align: center; padding: 4rem 1rem; }
@@ -25,7 +24,6 @@
   .loading { text-align: center; padding: 3rem; display: none; }
   .loading.on { display: block; }
   .loading p { color: rgb(112,64,105); font-size: 16px; font-weight: bold; margin-bottom: 8px; }
-  .loading small { color: #9a8498; }
   .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top-color: rgb(112,64,105); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .error { text-align: center; padding: 2rem; display: none; color: #7a1a1a; }
@@ -36,7 +34,7 @@
   .card { background: white; border: 1px solid #e0d8e0; border-radius: 9px; padding: 18px; margin-bottom: 12px; border-left: 4px solid rgb(112,64,105); }
   .card.licit { border-left-color: rgb(220,92,73); }
   .card-title { font-size: 15px; font-weight: bold; color: #1a1018; margin-bottom: 12px; }
-  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 16px; margin-bottom: 12px; border: 1px solid #e8dcea; border-radius: 8px; overflow: hidden; }
+  .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-bottom: 12px; border: 1px solid #e8dcea; border-radius: 8px; overflow: hidden; }
   .campo { padding: 10px 12px; border-right: 1px solid #e8dcea; border-bottom: 1px solid #e8dcea; }
   .campo:nth-child(3n) { border-right: none; }
   .campo:nth-last-child(-n+3) { border-bottom: none; }
@@ -52,17 +50,12 @@
   .badge-conv { background: #ece8f5; color: rgb(112,64,105); }
   .badge-licit { background: #faeee8; color: rgb(180,60,44); }
   .btn-ver { padding: 5px 14px; background: rgb(112,64,105); color: white; border: none; border-radius: 5px; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-block; }
-  .btn-ver:hover { opacity: 0.85; }
   .results-wrap { display: none; }
   .results-wrap.on { display: block; }
 </style>
 </head>
 <body>
-
-<header>
-  <div class="logo">Convocatorias · buscador IA</div>
-</header>
-
+<header><div class="logo">Convocatorias · buscador IA</div></header>
 <div class="search-bar">
   <input type="text" id="q" placeholder="Ej: fondos para ONGs de salud, licitaciones de infraestructura en Argentina..." onkeydown="if(event.key==='Enter')buscar()">
   <select id="fsec">
@@ -86,7 +79,6 @@
   </select>
   <button class="btn-buscar" id="bb" onclick="buscar()">↻ Buscar</button>
 </div>
-
 <div class="body">
   <div class="welcome" id="welcome">
     <h1>Buscá convocatorias y licitaciones</h1>
@@ -102,17 +94,14 @@
       <button class="pill" onclick="qb('fondos cultura artes convocatorias abiertas')">Cultura y artes</button>
     </div>
   </div>
-
   <div class="loading" id="loading">
     <div class="spinner"></div>
     <p>Buscando en internet...</p>
     <small>Consultando BID, BCIE, BIRF, ONU, UE y más fuentes. Puede tardar hasta 30 segundos.</small>
   </div>
-
   <div class="error" id="err">
     <p>No se pudo completar la búsqueda. <button onclick="buscar()" style="color:rgb(220,92,73);background:none;border:none;cursor:pointer;font-size:14px">Intentá de nuevo</button></p>
   </div>
-
   <div class="results-wrap" id="rw">
     <div class="section">
       <div class="section-title">Convocatorias a proyectos <span id="cnt-p" style="font-size:13px;font-weight:normal;color:#9a8498"></span></div>
@@ -124,109 +113,40 @@
     </div>
   </div>
 </div>
-
 <script>
-const API_KEY = 'PONER_API_KEY_ACA';
-
-function qb(t) { document.getElementById('q').value = t; buscar(); }
-
-async function buscar() {
-  const q = document.getElementById('q').value.trim();
-  const sec = document.getElementById('fsec').value;
-  const pais = document.getElementById('fpais').value;
-  let pts = [];
-  if (q) pts.push(q);
-  if (sec) pts.push(sec);
-  if (pais) pts.push(pais);
-  if (!pts.length) pts.push('convocatorias y licitaciones abiertas Argentina LATAM 2025');
-  const qf = pts.join(' ');
-
+function qb(t){document.getElementById('q').value=t;buscar()}
+async function buscar(){
+  const q=document.getElementById('q').value.trim();
+  const sec=document.getElementById('fsec').value;
+  const pais=document.getElementById('fpais').value;
+  let pts=[];
+  if(q)pts.push(q);
+  if(sec)pts.push(sec);
+  if(pais)pts.push(pais);
+  if(!pts.length)pts.push('convocatorias y licitaciones abiertas Argentina LATAM 2025');
+  const qf=pts.join(' ');
   setUI('l');
-  const btn = document.getElementById('bb');
-  btn.disabled = true;
-  btn.textContent = 'Buscando...';
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 4000,
-        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-        messages: [{
-          role: 'user',
-          content: `Buscá en internet convocatorias a proyectos Y licitaciones públicas relacionadas con: "${qf}". Incluí resultados de BID, BCIE, BIRF, Banco Mundial, ONU, UE, FOMIN, CAF y organismos nacionales. Para cada resultado devolvé un objeto JSON con: tipo ("proyecto" o "licitacion"), nombre, organismo_financiador, organismo_ejecutor, pais, tematica, monto, cierre, elegibilidad, requisitos, estado, link, fuente. Devolvé SOLO un array JSON válido con entre 10 y 20 resultados reales.`
-        }]
-      })
-    });
-
-    const data = await resp.json();
-    if (!resp.ok) throw new Error(data.error?.message || 'Error');
-
-    const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
-    const clean = text.replace(/```json\s*/gi,'').replace(/```\s*/gi,'').trim();
-    const s = clean.indexOf('['), e = clean.lastIndexOf(']');
-    if (s < 0 || e < 0) throw new Error('Sin resultados');
-
-    const results = JSON.parse(clean.slice(s, e+1));
-    render(results);
-    setUI('r');
-  } catch(err) {
-    setUI('e');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '↻ Buscar';
-  }
+  const btn=document.getElementById('bb');
+  btn.disabled=true;btn.textContent='Buscando...';
+  try{
+    const resp=await fetch('/api/buscar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({query:qf})});
+    if(!resp.ok)throw new Error('Error');
+    const results=await resp.json();
+    render(results);setUI('r');
+  }catch(err){setUI('e');}
+  finally{btn.disabled=false;btn.textContent='↻ Buscar';}
 }
-
-function render(results) {
-  const pr = results.filter(r => r.tipo === 'proyecto');
-  const li = results.filter(r => r.tipo === 'licitacion');
-  document.getElementById('cnt-p').textContent = `· ${pr.length} resultado${pr.length !== 1 ? 's' : ''}`;
-  document.getElementById('cnt-l').textContent = `· ${li.length} resultado${li.length !== 1 ? 's' : ''}`;
-  document.getElementById('cards-p').innerHTML = pr.length ? pr.map(cH).join('') : '<p style="color:#9a8498;text-align:center;padding:2rem">No se encontraron convocatorias</p>';
-  document.getElementById('cards-l').innerHTML = li.length ? li.map(cH).join('') : '<p style="color:#9a8498;text-align:center;padding:2rem">No se encontraron licitaciones</p>';
+function render(results){
+  const pr=results.filter(r=>r.tipo==='proyecto');
+  const li=results.filter(r=>r.tipo==='licitacion');
+  document.getElementById('cnt-p').textContent='· '+pr.length+' resultado'+(pr.length!==1?'s':'');
+  document.getElementById('cnt-l').textContent='· '+li.length+' resultado'+(li.length!==1?'s':'');
+  document.getElementById('cards-p').innerHTML=pr.length?pr.map(cH).join(''):'<p style="color:#9a8498;text-align:center;padding:2rem">No se encontraron convocatorias</p>';
+  document.getElementById('cards-l').innerHTML=li.length?li.map(cH).join(''):'<p style="color:#9a8498;text-align:center;padding:2rem">No se encontraron licitaciones</p>';
 }
-
-function estadoBadge(e) {
-  const el = (e||'').toLowerCase();
-  if (el.includes('activ') || el.includes('abierta')) return `<span class="badge badge-activo">${e}</span>`;
-  if (el.includes('próxim') || el.includes('proxim')) return `<span class="badge badge-proximo">${e}</span>`;
-  return `<span class="badge badge-otro">${e||'—'}</span>`;
-}
-
-function cH(r) {
-  const ep = r.tipo === 'proyecto';
-  return `
-  <div class="card ${ep ? '' : 'licit'}">
-    <div class="card-title">${r.nombre || 'Sin nombre'}</div>
-    <div class="card-grid">
-      <div class="campo"><div class="campo-label">País / Región</div><div class="campo-val">${r.pais||'—'}</div></div>
-      <div class="campo"><div class="campo-label">Organismo financiador</div><div class="campo-val">${r.organismo_financiador||'—'}</div></div>
-      <div class="campo"><div class="campo-label">Organismo ejecutor</div><div class="campo-val">${r.organismo_ejecutor||'—'}</div></div>
-      <div class="campo"><div class="campo-label">Temática</div><div class="campo-val">${r.tematica||'—'}</div></div>
-      <div class="campo"><div class="campo-label">Monto</div><div class="campo-val">${r.monto||'—'}</div></div>
-      <div class="campo"><div class="campo-label">Cierre</div><div class="campo-val">${r.cierre||'—'}</div></div>
-    </div>
-    ${r.elegibilidad ? `<div class="card-req"><strong>Elegibilidad:</strong> ${r.elegibilidad}</div>` : ''}
-    ${r.requisitos ? `<div class="card-req"><strong>Requisitos:</strong> ${r.requisitos}</div>` : ''}
-    <div class="card-footer">
-      <div class="badges">
-        ${estadoBadge(r.estado)}
-        <span class="badge ${ep ? 'badge-conv' : 'badge-licit'}">${ep ? 'Convocatoria' : 'Licitación pública'}</span>
-      </div>
-      ${r.link ? `<a class="btn-ver" href="${r.link}" target="_blank">Ver fuente ↗</a>` : ''}
-    </div>
-  </div>`;
-}
-
-function setUI(s) {
-  document.getElementById('welcome').style.display = s === 'w' ? '' : 'none';
-  document.getElementById('loading').className = 'loading' + (s === 'l' ? ' on' : '');
-  document.getElementById('err').className = 'error' + (s === 'e' ? ' on' : '');
-  document.getElementById('rw').className = 'results-wrap' + (s === 'r' ? ' on' : '');
-}
+function eb(e){const el=(e||'').toLowerCase();if(el.includes('activ')||el.includes('abierta'))return'<span class="badge badge-activo">'+e+'</span>';if(el.includes('próxim')||el.includes('proxim'))return'<span class="badge badge-proximo">'+e+'</span>';return'<span class="badge badge-otro">'+(e||'—')+'</span>';}
+function cH(r){const ep=r.tipo==='proyecto';return'<div class="card '+(ep?'':'licit')+'"><div class="card-title">'+(r.nombre||'Sin nombre')+'</div><div class="card-grid"><div class="campo"><div class="campo-label">País / Región</div><div class="campo-val">'+(r.pais||'—')+'</div></div><div class="campo"><div class="campo-label">Organismo financiador</div><div class="campo-val">'+(r.organismo_financiador||'—')+'</div></div><div class="campo"><div class="campo-label">Organismo ejecutor</div><div class="campo-val">'+(r.organismo_ejecutor||'—')+'</div></div><div class="campo"><div class="campo-label">Temática</div><div class="campo-val">'+(r.tematica||'—')+'</div></div><div class="campo"><div class="campo-label">Monto</div><div class="campo-val">'+(r.monto||'—')+'</div></div><div class="campo"><div class="campo-label">Cierre</div><div class="campo-val">'+(r.cierre||'—')+'</div></div></div>'+(r.elegibilidad?'<div class="card-req"><strong>Elegibilidad:</strong> '+r.elegibilidad+'</div>':'')+(r.requisitos?'<div class="card-req"><strong>Requisitos:</strong> '+r.requisitos+'</div>':'')+'<div class="card-footer"><div class="badges">'+eb(r.estado)+'<span class="badge '+(ep?'badge-conv':'badge-licit')+'">'+(ep?'Convocatoria':'Licitación pública')+'</span></div>'+(r.link?'<a class="btn-ver" href="'+r.link+'" target="_blank">Ver fuente ↗</a>':'')+'</div></div>';}
+function setUI(s){document.getElementById('welcome').style.display=s==='w'?'':'none';document.getElementById('loading').className='loading'+(s==='l'?' on':'');document.getElementById('err').className='error'+(s==='e'?' on':'');document.getElementById('rw').className='results-wrap'+(s==='r'?' on':'');}
 </script>
 </body>
 </html>

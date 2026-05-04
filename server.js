@@ -29,7 +29,7 @@ app.post('/api/buscar', async (req, res) => {
     });
 
     const data = await response.json();
-    if (data.error) return res.status(500).json([]);
+    return res.status(500).json({ error: data.error.message });
 
     const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
     const clean = text.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
@@ -39,7 +39,7 @@ app.post('/api/buscar', async (req, res) => {
     const results = JSON.parse(clean.slice(s, e + 1));
     res.json(Array.isArray(results) ? results : []);
   } catch (err) {
-    res.status(500).json([]);
+   res.status(500).json({ error: err.message });
   }
 });
 

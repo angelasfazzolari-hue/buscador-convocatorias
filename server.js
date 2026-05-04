@@ -3,7 +3,7 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 app.post('/api/buscar', async (req, res) => {
 console.log('Búsqueda recibida:', req.body);  const { query } = req.body;

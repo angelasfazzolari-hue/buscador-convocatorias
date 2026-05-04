@@ -44,7 +44,7 @@ console.log('Búsqueda recibida:', req.body);  const { query } = req.body;
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'índice.html'));
 });
 
 const PORT = process.env.PORT || 3000;

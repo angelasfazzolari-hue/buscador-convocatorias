@@ -6,7 +6,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/buscar', async (req, res) => {
-  const { query } = req.body;
+console.log('Búsqueda recibida:', req.body);  const { query } = req.body;
   if (!query) return res.status(400).json({ error: 'Query requerida' });
 
   try {

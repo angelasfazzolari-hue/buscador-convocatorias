@@ -28,7 +28,8 @@ console.log('Búsqueda recibida:', req.body);  const query = req.body.query || r
       })
     });
 
-    const data = await response.json();
+    const data = await response.json();console.log('Status Anthropic:', response.status);
+console.log('Respuesta Anthropic:', JSON.stringify(data).slice(0, 300));
     if (data.error) return res.status(500).json({ error: data.error.message });
 
     const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');

@@ -6,7 +6,7 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 app.post('/api/buscar', async (req, res) => {
-console.log('Búsqueda recibida:', req.body);  const { query } = req.body;
+console.log('Búsqueda recibida:', req.body);  const query = req.body.query || req.body.consulta;
   if (!query) return res.status(400).json({ error: 'Query requerida' });
 
   try {
@@ -44,7 +44,7 @@ console.log('Búsqueda recibida:', req.body);  const { query } = req.body;
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'índice.html'));
+  res.sendFile(path.join(__dirname, 'indice.html'));
 });
 
 const PORT = process.env.PORT || 3000;

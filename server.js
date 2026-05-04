@@ -32,7 +32,10 @@ console.log('Búsqueda recibida:', req.body);  const query = req.body.query || r
 console.log('Respuesta Anthropic:', JSON.stringify(data).slice(0, 300));
     if (data.error) return res.status(500).json({ error: data.error.message });
 
-    const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    const allContent = data.content || [];
+const text = allContent.filter(b => b.type === 'text').map(b => b.text).join('');
+console.log('Bloques:', allContent.map(b => b.type).join(', '));
+console.log('Texto extraído:', text.slice(0, 200));
     const clean = text.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
     const s = clean.indexOf('['), e = clean.lastIndexOf(']');
     if (s < 0 || e < 0) return res.json([]);

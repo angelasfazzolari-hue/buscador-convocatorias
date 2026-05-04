@@ -29,7 +29,7 @@ console.log('Búsqueda recibida:', req.body);  const { query } = req.body;
     });
 
     const data = await response.json();
-    return res.status(500).json({ error: data.error.message });
+    if (data.error) return res.status(500).json({ error: data.error.message });
 
     const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
     const clean = text.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();

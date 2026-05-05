@@ -23,8 +23,7 @@ console.log('Búsqueda recibida:', req.body);  const query = req.body.query || r
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
         messages: [{
           role: 'user',
-          content: `Buscá en internet convocatorias a proyectos Y licitaciones públicas relacionadas con: "${query}". Incluí resultados de BID, BCIE, BIRF, Banco Mundial, ONU, UE, FOMIN, CAF y organismos nacionales de Argentina y Latinoamérica. Para cada resultado devolvé un objeto JSON con: tipo ("proyecto" o "licitacion"), nombre, organismo_financiador, organismo_ejecutor, pais, tematica, monto, cierre, elegibilidad, requisitos, estado, link, fuente. Devolvé SOLO un array JSON válido con entre 10 y 20 resultados reales.`
-        }]
+        Buscá en internet convocatorias y licitaciones activas relacionadas con: "${query}". Devolvé ÚNICAMENTE un array JSON válido, sin texto adicional, sin explicaciones. Formato: [{"tipo":"proyecto","nombre":"...","organismo_financiador":"...","organismo_ejecutor":"...","pais":"...","tematica":"...","monto":"...","cierre":"...","elegibilidad":"...","requisitos":"...","estado":"...","link":"...","fuente":"..."}]. Incluí entre 15 y 20 resultados reales de BID, BCIE, BIRF, Banco Mundial, ONU, UE, FOMIN, CAF, gobiernos de Argentina y LATAM.
       })
     });
 
